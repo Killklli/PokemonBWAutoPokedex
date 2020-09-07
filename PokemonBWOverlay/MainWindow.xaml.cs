@@ -48,40 +48,47 @@ namespace PokemonBWOverlay
         }
         public List<Pokemon> PossibleEvos(Pokemon pokemon)
         {
-            var VanillaEvo = Pokedex.Find(x => x.Name.ToLower() == pokemon.VanillaEvo.ToLower());
-            var LevelRate = Pokedex.FindAll(x => x.LevelRate == VanillaEvo.LevelRate);
-            LevelRate.Remove(VanillaEvo);
-            List<Pokemon> Typing = new List<Pokemon>();
-            if (VanillaEvo.Id != 285 && VanillaEvo.Id != 426)
+            if (pokemon.VanillaEvo != "")
             {
-                Typing = LevelRate.FindAll(x => x.Type1 == VanillaEvo.Type1 || x.Type1 == VanillaEvo.Type2 || x.Type2 == VanillaEvo.Type1 || x.Type2 == VanillaEvo.Type2);
+                var VanillaEvo = Pokedex.Find(x => x.Name.ToLower() == pokemon.VanillaEvo.ToLower());
+                var LevelRate = Pokedex.FindAll(x => x.LevelRate == VanillaEvo.LevelRate);
+                LevelRate.Remove(VanillaEvo);
+                List<Pokemon> Typing = new List<Pokemon>();
+                if (VanillaEvo.Id != 285 && VanillaEvo.Id != 426)
+                {
+                    Typing = LevelRate.FindAll(x => x.Type1 == VanillaEvo.Type1 || x.Type1 == VanillaEvo.Type2 || x.Type2 == VanillaEvo.Type1 || x.Type2 == VanillaEvo.Type2);
+                }
+                else
+                {
+                    Typing = LevelRate;
+                }
+                Double adjustrangeten = Convert.ToDouble(VanillaEvo.BST) * 0.1;
+                Double adjustrangefif = Convert.ToDouble(VanillaEvo.BST) * 0.15;
+                Double adjustrangetwen = Convert.ToDouble(VanillaEvo.BST) * 0.2;
+                Double adjustrangetwenfi = Convert.ToDouble(VanillaEvo.BST) * 0.25;
+                List<Pokemon> Possible = new List<Pokemon>();
+                Possible = Typing.FindAll(x => x.BST <= (VanillaEvo.BST + adjustrangeten) && x.BST >= (VanillaEvo.BST - adjustrangeten));
+                if (Possible.Count() >= 3)
+                {
+                    return Possible.OrderByDescending(x => x.BST).ToList();
+                }
+                Possible = Typing.FindAll(x => x.BST <= (VanillaEvo.BST + adjustrangefif) && x.BST >= (VanillaEvo.BST - adjustrangefif));
+                if (Possible.Count() >= 3)
+                {
+                    return Possible.OrderByDescending(x => x.BST).ToList();
+                }
+                Possible = Typing.FindAll(x => x.BST <= (VanillaEvo.BST + adjustrangetwen) && x.BST >= (VanillaEvo.BST - adjustrangetwen));
+                if (Possible.Count() >= 3)
+                {
+                    return Possible.OrderByDescending(x => x.BST).ToList();
+                }
+                Possible = Typing.FindAll(x => x.BST <= (VanillaEvo.BST + adjustrangetwenfi) && x.BST >= (VanillaEvo.BST - adjustrangetwenfi));
+                return Possible.OrderByDescending(x => x.BST).ToList();
             }
             else
             {
-                Typing = LevelRate;
+                return new List<Pokemon> { new Pokemon { Name = "None"} };
             }
-            Double adjustrangeten = Convert.ToDouble(VanillaEvo.BST) * 0.1;
-            Double adjustrangefif = Convert.ToDouble(VanillaEvo.BST) * 0.15;
-            Double adjustrangetwen = Convert.ToDouble(VanillaEvo.BST) * 0.2;
-            Double adjustrangetwenfi = Convert.ToDouble(VanillaEvo.BST) * 0.25;
-            List<Pokemon> Possible = new List<Pokemon>();
-            Possible = Typing.FindAll(x => x.BST <= (VanillaEvo.BST + adjustrangeten) && x.BST >= (VanillaEvo.BST - adjustrangeten));
-            if (Possible.Count() >= 3)
-            {
-                return Possible.OrderByDescending(x => x.BST).ToList();
-            }
-            Possible = Typing.FindAll(x => x.BST <= (VanillaEvo.BST + adjustrangefif) && x.BST >= (VanillaEvo.BST - adjustrangefif));
-            if (Possible.Count() >= 3)
-            {
-                return Possible.OrderByDescending(x => x.BST).ToList();
-            }
-            Possible = Typing.FindAll(x => x.BST <= (VanillaEvo.BST + adjustrangetwen) && x.BST >= (VanillaEvo.BST - adjustrangetwen));
-            if (Possible.Count() >= 3)
-            {
-                return Possible.OrderByDescending(x => x.BST).ToList();
-            }
-            Possible = Typing.FindAll(x => x.BST <= (VanillaEvo.BST + adjustrangetwenfi) && x.BST >= (VanillaEvo.BST - adjustrangetwenfi));
-            return Possible.OrderByDescending(x => x.BST).ToList();
         }
         public async void SetupItems()
         {
@@ -145,228 +152,155 @@ namespace PokemonBWOverlay
 
         private async void SearchForValues(string data)
         {
-            JObject o = JObject.Parse(data);
-            long value1 = Int64.Parse(o["value1"].ToString());
-            long value2 = Int64.Parse(o["value2"].ToString());
-            long value3 = Int64.Parse(o["value3"].ToString());
-            long value4 = Int64.Parse(o["value4"].ToString());
-            long PartyPoke = Int64.Parse(o["party1"].ToString());
+            try
+            {
+                JObject o = JObject.Parse(data);
+                long value1 = Int64.Parse(o["value1"].ToString());
+                long value2 = Int64.Parse(o["value2"].ToString());
+                long value3 = Int64.Parse(o["value3"].ToString());
+                long value4 = Int64.Parse(o["value4"].ToString());
+                long PartyPoke = Int64.Parse(o["party1"].ToString());
 
-            if (value1 == 1 && value2 == 0 && value3 == 1)
-            {
-                value1 = 0;
-                value2 = 0;
-                value3 = 0;
-                value4 = 0;
-            }
-            if (GlobalStat != -1)
-            {
-                if (counter > 2)
+                if (value1 == 1 && value2 == 0 && value3 == 1)
                 {
-                    if (GlobalStat != value4 || (GlobalStat == 0 && value4 == 0))
+                    value1 = 0;
+                    value2 = 0;
+                    value3 = 0;
+                    value4 = 0;
+                }
+                if (GlobalStat != -1)
+                {
+                    if (counter > 2)
                     {
-                        changed = true;
+                        if (GlobalStat != value4 || (GlobalStat == 0 && value4 == 0))
+                        {
+                            changed = true;
+                        }
+                        counter = 0;
                     }
-                    counter = 0;
-                }
-                else
-                {
-                    counter++;
-                }
-            }
-            Pokemon EnemyPokemon = null;
-            Pokemon PlayersPokemon = null;
-            // Type 0 is reset no battle
-            // Type 1 is when we went into a wild battle
-            // Type 2 is a trainer battle
-            if (value1 == 0 && value2 == 0 && value3 == 0)
-            {
-                type = 0;
-                PreviousPokemon = 0;
-            }
-            if (type == 0)
-            {
-                if (value1 != 0 && value2 == 0 && value3 != 0)
-                {
-                    type = 1;
-                }
-                else if (value1 == 0 && value2 != 0 && value3 != 0)
-                {
-                    type = 2;
-                    GlobalStat = -1;
-                    counter = 0;
-                    changed = false;
-                    PreviousPokemon = 00000;
-                }
-            }
-            else if (type == 1)
-            {
-                // If its a wild pokemon do standard data
-                EnemyPokemon = Pokedex.Find(x => x.Id == value1);
-                long tracker = 0;
-                if (value2 != 0)
-                {
-                    tracker = value2;
-                }
-                else
-                {
-                    tracker = value3;
-                }
-                PlayersPokemon = Pokedex.Find(x => x.Id == tracker);
-            }
-            else if (type == 2)
-            {
-                if (value1 == 0)
-                {
-                    // The battle just started and no pokemon has been swapped
-                    EnemyPokemon = Pokedex.Find(x => x.Id == value2);
-                    PreviousPokemon = value2;
-                    PlayersPokemon = Pokedex.Find(x => x.Id == value3);
-                    GlobalStat = value4;
-                    counter = 0;
-                    changed = false;
-                }
-                else
-                {
-                    // The Enemy pokemon died and we have not swapped
-                    if (PreviousPokemon == value2 && changed == false)
+                    else
                     {
-                        EnemyPokemon = Pokedex.Find(x => x.Id == value1);
+                        counter++;
+                    }
+                }
+                Pokemon EnemyPokemon = null;
+                Pokemon PlayersPokemon = null;
+                // Type 0 is reset no battle
+                // Type 1 is when we went into a wild battle
+                // Type 2 is a trainer battle
+                if (value1 == 0 && value2 == 0 && value3 == 0)
+                {
+                    type = 0;
+                    PreviousPokemon = 0;
+                }
+                if (type == 0)
+                {
+                    if (value1 != 0 && value2 == 0 && value3 != 0)
+                    {
+                        type = 1;
+                    }
+                    else if (value1 == 0 && value2 != 0 && value3 != 0)
+                    {
+                        type = 2;
+                        GlobalStat = -1;
+                        counter = 0;
+                        changed = false;
+                        PreviousPokemon = 00000;
+                    }
+                }
+                else if (type == 1)
+                {
+                    // If its a wild pokemon do standard data
+                    EnemyPokemon = Pokedex.Find(x => x.Id == value1);
+                    long tracker = 0;
+                    if (value2 != 0)
+                    {
+                        tracker = value2;
+                    }
+                    else
+                    {
+                        tracker = value3;
+                    }
+                    PlayersPokemon = Pokedex.Find(x => x.Id == tracker);
+                }
+                else if (type == 2)
+                {
+                    if (value1 == 0)
+                    {
+                        // The battle just started and no pokemon has been swapped
+                        EnemyPokemon = Pokedex.Find(x => x.Id == value2);
+                        PreviousPokemon = value2;
                         PlayersPokemon = Pokedex.Find(x => x.Id == value3);
+                        GlobalStat = value4;
+                        counter = 0;
+                        changed = false;
                     }
-
-                    // The Enemy pokemon fainted and we swapped
-                    else if (PreviousPokemon != value2 && changed == true)
+                    else
                     {
-                        if (prechanged == false)
+                        // The Enemy pokemon died and we have not swapped
+                        if (PreviousPokemon == value2 && changed == false)
                         {
                             EnemyPokemon = Pokedex.Find(x => x.Id == value1);
-                            PlayersPokemon = Pokedex.Find(x => x.Id == value2);
+                            PlayersPokemon = Pokedex.Find(x => x.Id == value3);
                         }
-                        else
+
+                        // The Enemy pokemon fainted and we swapped
+                        else if (PreviousPokemon != value2 && changed == true)
+                        {
+                            if (prechanged == false)
+                            {
+                                EnemyPokemon = Pokedex.Find(x => x.Id == value1);
+                                PlayersPokemon = Pokedex.Find(x => x.Id == value2);
+                            }
+                            else
+                            {
+                                EnemyPokemon = Pokedex.Find(x => x.Id == value2);
+                                PlayersPokemon = Pokedex.Find(x => x.Id == value1);
+                            }
+                        }
+                        // The player changed their pokemon first
+                        else if (PreviousPokemon == value2 && changed == true)
                         {
                             EnemyPokemon = Pokedex.Find(x => x.Id == value2);
                             PlayersPokemon = Pokedex.Find(x => x.Id == value1);
+                            prechanged = true;
                         }
-                    }
-                    // The player changed their pokemon first
-                    else if (PreviousPokemon == value2 && changed == true)
-                    {
-                        EnemyPokemon = Pokedex.Find(x => x.Id == value2);
-                        PlayersPokemon = Pokedex.Find(x => x.Id == value1);
-                        prechanged = true;
-                    }
-                    // Else default to assuming slot 1 is the enemy and we are still slot 3
-                    else
-                    {
-                        EnemyPokemon = Pokedex.Find(x => x.Id == value1);
-                        PlayersPokemon = Pokedex.Find(x => x.Id == value3);
-                    }
-
-                }
-
-            }
-
-            string CurrentEnemyPokemonId = (string)enemy.Poke1.Dispatcher.Invoke(new Func<string>(() => enemy.Poke1.Text));
-            string CurrentPlayerPokemonId = (string)player.Poke2.Dispatcher.Invoke(new Func<string>(() => player.Poke2.Text));
-
-            if (EnemyPokemon != null && PlayersPokemon != null)
-            {
-                if (counter == 0)
-                {
-                    if (CurrentEnemyPokemonId != EnemyPokemon.Id.ToString())
-                    {
-                        await enemy.Poke1.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1.Text = EnemyPokemon.Id.ToString()));
-                        await enemy.Poke1Gen.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Gen.Text = EnemyPokemon.Gen.ToString()));
-                        await enemy.Poke1Name.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Name.Text = EnemyPokemon.Name.ToString()));
-                        await enemy.Poke1Type1.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Type1.Text = EnemyPokemon.Type1.ToString()));
-                        await enemy.Poke1Type2.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Type2.Text = EnemyPokemon.Type2.ToString()));
-                        await enemy.Poke1BST.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1BST.Text = EnemyPokemon.BST.ToString()));
-                        await enemy.Poke1LevelRate.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1LevelRate.Text = EnemyPokemon.LevelRate.ToString()));
-                        await enemy.Poke1MoveLevels.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1MoveLevels.Text = EnemyPokemon.MoveLevels.ToString()));
-                        await enemy.Poke1Legendary.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Legendary.Text = EnemyPokemon.IsLegendary.ToString()));
-                        await enemy.Poke1EvoReq.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1EvoReq.Text = EnemyPokemon.EvoReq.ToString()));
-                        await enemy.Poke1Image.Dispatcher.BeginInvoke((Action)(() => WpfAnimatedGif.ImageBehavior.SetAnimatedSource(enemy.Poke1Image, GetImageSource(path + "/sprites/" + EnemyPokemon.Name.ToLower() + ".gif"))));
-                        var Evos = PossibleEvos(EnemyPokemon);
-                        string joined = string.Join(", ", Evos.Select(x => x.Name));
-                        await enemy.Poke1Evolutions.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Evolutions.Text = joined));
-
-                    }
-                    if (CurrentPlayerPokemonId != PlayersPokemon.Id.ToString())
-                    {
-                        await player.Poke2.Dispatcher.BeginInvoke((Action)(() => player.Poke2.Text = PlayersPokemon.Id.ToString()));
-                        await player.Poke2Gen.Dispatcher.BeginInvoke((Action)(() => player.Poke2Gen.Text = PlayersPokemon.Gen.ToString()));
-                        await player.Poke2Name.Dispatcher.BeginInvoke((Action)(() => player.Poke2Name.Text = PlayersPokemon.Name.ToString()));
-                        await player.Poke2Type1.Dispatcher.BeginInvoke((Action)(() => player.Poke2Type1.Text = PlayersPokemon.Type1.ToString()));
-                        await player.Poke2Type2.Dispatcher.BeginInvoke((Action)(() => player.Poke2Type2.Text = PlayersPokemon.Type2.ToString()));
-                        await player.Poke2BST.Dispatcher.BeginInvoke((Action)(() => player.Poke2BST.Text = PlayersPokemon.BST.ToString()));
-                        await player.Poke2LevelRate.Dispatcher.BeginInvoke((Action)(() => player.Poke2LevelRate.Text = PlayersPokemon.LevelRate.ToString()));
-                        await player.Poke2MoveLevels.Dispatcher.BeginInvoke((Action)(() => player.Poke2MoveLevels.Text = PlayersPokemon.MoveLevels.ToString()));
-                        await player.Poke2Legendary.Dispatcher.BeginInvoke((Action)(() => player.Poke2Legendary.Text = PlayersPokemon.IsLegendary.ToString()));
-                        await player.Poke2EvoReq.Dispatcher.BeginInvoke((Action)(() => player.Poke2EvoReq.Text = PlayersPokemon.EvoReq.ToString()));
-                        await player.Poke2Image.Dispatcher.BeginInvoke((Action)(() => WpfAnimatedGif.ImageBehavior.SetAnimatedSource(player.Poke2Image, GetImageSource(path + "/sprites/" + PlayersPokemon.Name.ToLower() + ".gif"))));
-                        var Evos = PossibleEvos(PlayersPokemon);
-                        string joined = string.Join(", ", Evos.Select(x => x.Name));
-                        await player.Poke2Evolutions.Dispatcher.BeginInvoke((Action)(() => player.Poke2Evolutions.Text = joined));
-                    }
-                }
-            }
-            else
-            {
-                if (AutoHide == true)
-                {
-                    await enemy.Dispatcher.BeginInvoke((Action)(() => enemy.Opacity = 0));
-                    if (PartyView == true)
-                    {
-                        if (Transparent == true)
-                        {
-                            await player.Dispatcher.BeginInvoke((Action)(() => player.Opacity = 0.7));
-                        }
+                        // Else default to assuming slot 1 is the enemy and we are still slot 3
                         else
                         {
-                            await player.Dispatcher.BeginInvoke((Action)(() => player.Opacity = 1));
+                            EnemyPokemon = Pokedex.Find(x => x.Id == value1);
+                            PlayersPokemon = Pokedex.Find(x => x.Id == value3);
                         }
-                    }
-                    else
-                    {
-                        await player.Dispatcher.BeginInvoke((Action)(() => player.Opacity = 0));
-                    }
-                }
-                else
-                {
-                    if (Transparent == true)
-                    {
-                        await enemy.Dispatcher.BeginInvoke((Action)(() => enemy.Opacity = 0.7));
-                        await player.Dispatcher.BeginInvoke((Action)(() => player.Opacity = 0.7));
-                    }
-                    else
-                    {
-                        await enemy.Dispatcher.BeginInvoke((Action)(() => enemy.Opacity = 1));
-                        await player.Dispatcher.BeginInvoke((Action)(() => player.Opacity = 1));
-                    }
-                }
-                if (CurrentEnemyPokemonId != "0")
-                {
 
-                    await enemy.Poke1.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1.Text = "0"));
-                    await enemy.Poke1Gen.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Gen.Text = "0"));
-                    await enemy.Poke1Name.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Name.Text = "None"));
-                    await enemy.Poke1Type1.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Type1.Text = "None"));
-                    await enemy.Poke1Type2.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Type2.Text = "None"));
-                    await enemy.Poke1BST.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1BST.Text = "0"));
-                    await enemy.Poke1LevelRate.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1LevelRate.Text = "None"));
-                    await enemy.Poke1MoveLevels.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1MoveLevels.Text = "0"));
-                    await enemy.Poke1Legendary.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Legendary.Text = "False"));
-                    await enemy.Poke1EvoReq.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1EvoReq.Text = "None"));
-                    await enemy.Poke1Image.Dispatcher.BeginInvoke((Action)(() => WpfAnimatedGif.ImageBehavior.SetAnimatedSource(enemy.Poke1Image, GetImageSource(path + "/sprites/none.gif"))));
-                    await enemy.Poke1Evolutions.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Evolutions.Text = "None"));
+                    }
+
                 }
-                if (CurrentPlayerPokemonId != "0" || PartyView == true)
+
+                string CurrentEnemyPokemonId = (string)enemy.Poke1.Dispatcher.Invoke(new Func<string>(() => enemy.Poke1.Text));
+                string CurrentPlayerPokemonId = (string)player.Poke2.Dispatcher.Invoke(new Func<string>(() => player.Poke2.Text));
+
+                if (EnemyPokemon != null && PlayersPokemon != null)
                 {
-                    if (PartyView == true)
+                    if (counter == 0)
                     {
-                        PlayersPokemon = Pokedex.Find(x => x.Id == PartyPoke);
-                        CurrentPlayerPokemonId = (string)player.Poke2.Dispatcher.Invoke(new Func<string>(() => player.Poke2.Text));
+                        if (CurrentEnemyPokemonId != EnemyPokemon.Id.ToString())
+                        {
+                            await enemy.Poke1.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1.Text = EnemyPokemon.Id.ToString()));
+                            await enemy.Poke1Gen.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Gen.Text = EnemyPokemon.Gen.ToString()));
+                            await enemy.Poke1Name.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Name.Text = EnemyPokemon.Name.ToString()));
+                            await enemy.Poke1Type1.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Type1.Text = EnemyPokemon.Type1.ToString()));
+                            await enemy.Poke1Type2.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Type2.Text = EnemyPokemon.Type2.ToString()));
+                            await enemy.Poke1BST.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1BST.Text = EnemyPokemon.BST.ToString()));
+                            await enemy.Poke1LevelRate.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1LevelRate.Text = EnemyPokemon.LevelRate.ToString()));
+                            await enemy.Poke1MoveLevels.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1MoveLevels.Text = EnemyPokemon.MoveLevels.ToString()));
+                            await enemy.Poke1Legendary.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Legendary.Text = EnemyPokemon.IsLegendary.ToString()));
+                            await enemy.Poke1EvoReq.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1EvoReq.Text = EnemyPokemon.EvoReq.ToString()));
+                            await enemy.Poke1Image.Dispatcher.BeginInvoke((Action)(() => WpfAnimatedGif.ImageBehavior.SetAnimatedSource(enemy.Poke1Image, GetImageSource(path + "/sprites/" + EnemyPokemon.Name.ToLower() + ".gif"))));
+                            var Evos = PossibleEvos(EnemyPokemon);
+                            string joined = string.Join(", ", Evos.Select(x => x.Name));
+                            await enemy.Poke1Evolutions.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Evolutions.Text = joined));
+
+                        }
                         if (CurrentPlayerPokemonId != PlayersPokemon.Id.ToString())
                         {
                             await player.Poke2.Dispatcher.BeginInvoke((Action)(() => player.Poke2.Text = PlayersPokemon.Id.ToString()));
@@ -384,31 +318,131 @@ namespace PokemonBWOverlay
                             string joined = string.Join(", ", Evos.Select(x => x.Name));
                             await player.Poke2Evolutions.Dispatcher.BeginInvoke((Action)(() => player.Poke2Evolutions.Text = joined));
                         }
-
+                    }
+                }
+                else
+                {
+                    if (AutoHide == true)
+                    {
+                        await enemy.Dispatcher.BeginInvoke((Action)(() => enemy.Opacity = 0));
+                        if (PartyView == true)
+                        {
+                            if (Transparent == true)
+                            {
+                                await player.Dispatcher.BeginInvoke((Action)(() => player.Opacity = 0.7));
+                            }
+                            else
+                            {
+                                await player.Dispatcher.BeginInvoke((Action)(() => player.Opacity = 1));
+                            }
+                        }
+                        else
+                        {
+                            await player.Dispatcher.BeginInvoke((Action)(() => player.Opacity = 0));
+                        }
                     }
                     else
                     {
-                        if (CurrentPlayerPokemonId != "0")
+                        if (Transparent == true)
                         {
-                            await player.Poke2.Dispatcher.BeginInvoke((Action)(() => player.Poke2.Text = "0"));
-                            await player.Poke2Gen.Dispatcher.BeginInvoke((Action)(() => player.Poke2Gen.Text = "0"));
-                            await player.Poke2Name.Dispatcher.BeginInvoke((Action)(() => player.Poke2Name.Text = "None"));
-                            await player.Poke2Type1.Dispatcher.BeginInvoke((Action)(() => player.Poke2Type1.Text = "None"));
-                            await player.Poke2Type2.Dispatcher.BeginInvoke((Action)(() => player.Poke2Type2.Text = "None"));
-                            await player.Poke2BST.Dispatcher.BeginInvoke((Action)(() => player.Poke2BST.Text = "0"));
-                            await player.Poke2LevelRate.Dispatcher.BeginInvoke((Action)(() => player.Poke2LevelRate.Text = "None"));
-                            await player.Poke2MoveLevels.Dispatcher.BeginInvoke((Action)(() => player.Poke2MoveLevels.Text = "0"));
-                            await player.Poke2Legendary.Dispatcher.BeginInvoke((Action)(() => player.Poke2Legendary.Text = "False"));
-                            await player.Poke2EvoReq.Dispatcher.BeginInvoke((Action)(() => player.Poke2EvoReq.Text = "None"));
-                            await player.Poke2Image.Dispatcher.BeginInvoke((Action)(() => WpfAnimatedGif.ImageBehavior.SetAnimatedSource(player.Poke2Image, GetImageSource(path + "/sprites/none.gif"))));
-                            await player.Poke2Evolutions.Dispatcher.BeginInvoke((Action)(() => player.Poke2Evolutions.Text = "None"));
+                            await enemy.Dispatcher.BeginInvoke((Action)(() => enemy.Opacity = 0.7));
+                            await player.Dispatcher.BeginInvoke((Action)(() => player.Opacity = 0.7));
+                        }
+                        else
+                        {
+                            await enemy.Dispatcher.BeginInvoke((Action)(() => enemy.Opacity = 1));
+                            await player.Dispatcher.BeginInvoke((Action)(() => player.Opacity = 1));
+                        }
+                    }
+                    if (CurrentEnemyPokemonId != "0")
+                    {
 
+                        await enemy.Poke1.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1.Text = "0"));
+                        await enemy.Poke1Gen.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Gen.Text = "0"));
+                        await enemy.Poke1Name.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Name.Text = "None"));
+                        await enemy.Poke1Type1.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Type1.Text = "None"));
+                        await enemy.Poke1Type2.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Type2.Text = "None"));
+                        await enemy.Poke1BST.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1BST.Text = "0"));
+                        await enemy.Poke1LevelRate.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1LevelRate.Text = "None"));
+                        await enemy.Poke1MoveLevels.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1MoveLevels.Text = "0"));
+                        await enemy.Poke1Legendary.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Legendary.Text = "False"));
+                        await enemy.Poke1EvoReq.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1EvoReq.Text = "None"));
+                        await enemy.Poke1Image.Dispatcher.BeginInvoke((Action)(() => WpfAnimatedGif.ImageBehavior.SetAnimatedSource(enemy.Poke1Image, GetImageSource(path + "/sprites/none.gif"))));
+                        await enemy.Poke1Evolutions.Dispatcher.BeginInvoke((Action)(() => enemy.Poke1Evolutions.Text = "None"));
+                    }
+                    if (CurrentPlayerPokemonId != "0" || PartyView == true)
+                    {
+                        if (PartyView == true)
+                        {
+                            try
+                            {
+                                PlayersPokemon = Pokedex.Find(x => x.Id == PartyPoke);
+                                CurrentPlayerPokemonId = (string)player.Poke2.Dispatcher.Invoke(new Func<string>(() => player.Poke2.Text));
+                                if (PlayersPokemon == null)
+                                {
+                                    PlayersPokemon = new Pokemon
+                                    {
+                                        BST = 0,
+                                        EvoReq = "None",
+                                        Gen = 0,
+                                        Id = 0,
+                                        IsLegendary = false,
+                                        LevelRate = "None",
+                                        MoveLevels = "0",
+                                        Name = "None",
+                                        Type1 = "None",
+                                        Type2 = "None",
+                                        VanillaEvo = "None",
+                                        VanillaEvo2 = "None",
+                                        VanillaEvo3 = "None",
+                                        VanillaEvo4 = "None"
+                                    };
+                                }
+                            }
+                            catch { }
+                            if (CurrentPlayerPokemonId != PlayersPokemon.Id.ToString())
+                            {
+                                await player.Poke2.Dispatcher.BeginInvoke((Action)(() => player.Poke2.Text = PlayersPokemon.Id.ToString()));
+                                await player.Poke2Gen.Dispatcher.BeginInvoke((Action)(() => player.Poke2Gen.Text = PlayersPokemon.Gen.ToString()));
+                                await player.Poke2Name.Dispatcher.BeginInvoke((Action)(() => player.Poke2Name.Text = PlayersPokemon.Name.ToString()));
+                                await player.Poke2Type1.Dispatcher.BeginInvoke((Action)(() => player.Poke2Type1.Text = PlayersPokemon.Type1.ToString()));
+                                await player.Poke2Type2.Dispatcher.BeginInvoke((Action)(() => player.Poke2Type2.Text = PlayersPokemon.Type2.ToString()));
+                                await player.Poke2BST.Dispatcher.BeginInvoke((Action)(() => player.Poke2BST.Text = PlayersPokemon.BST.ToString()));
+                                await player.Poke2LevelRate.Dispatcher.BeginInvoke((Action)(() => player.Poke2LevelRate.Text = PlayersPokemon.LevelRate.ToString()));
+                                await player.Poke2MoveLevels.Dispatcher.BeginInvoke((Action)(() => player.Poke2MoveLevels.Text = PlayersPokemon.MoveLevels.ToString()));
+                                await player.Poke2Legendary.Dispatcher.BeginInvoke((Action)(() => player.Poke2Legendary.Text = PlayersPokemon.IsLegendary.ToString()));
+                                await player.Poke2EvoReq.Dispatcher.BeginInvoke((Action)(() => player.Poke2EvoReq.Text = PlayersPokemon.EvoReq.ToString()));
+                                await player.Poke2Image.Dispatcher.BeginInvoke((Action)(() => WpfAnimatedGif.ImageBehavior.SetAnimatedSource(player.Poke2Image, GetImageSource(path + "/sprites/" + PlayersPokemon.Name.ToLower() + ".gif"))));
+                                var Evos = PossibleEvos(PlayersPokemon);
+                                string joined = string.Join(", ", Evos.Select(x => x.Name));
+                                await player.Poke2Evolutions.Dispatcher.BeginInvoke((Action)(() => player.Poke2Evolutions.Text = joined));
+                            }
+
+                        }
+                        else
+                        {
+                            if (CurrentPlayerPokemonId != "0")
+                            {
+                                await player.Poke2.Dispatcher.BeginInvoke((Action)(() => player.Poke2.Text = "0"));
+                                await player.Poke2Gen.Dispatcher.BeginInvoke((Action)(() => player.Poke2Gen.Text = "0"));
+                                await player.Poke2Name.Dispatcher.BeginInvoke((Action)(() => player.Poke2Name.Text = "None"));
+                                await player.Poke2Type1.Dispatcher.BeginInvoke((Action)(() => player.Poke2Type1.Text = "None"));
+                                await player.Poke2Type2.Dispatcher.BeginInvoke((Action)(() => player.Poke2Type2.Text = "None"));
+                                await player.Poke2BST.Dispatcher.BeginInvoke((Action)(() => player.Poke2BST.Text = "0"));
+                                await player.Poke2LevelRate.Dispatcher.BeginInvoke((Action)(() => player.Poke2LevelRate.Text = "None"));
+                                await player.Poke2MoveLevels.Dispatcher.BeginInvoke((Action)(() => player.Poke2MoveLevels.Text = "0"));
+                                await player.Poke2Legendary.Dispatcher.BeginInvoke((Action)(() => player.Poke2Legendary.Text = "False"));
+                                await player.Poke2EvoReq.Dispatcher.BeginInvoke((Action)(() => player.Poke2EvoReq.Text = "None"));
+                                await player.Poke2Image.Dispatcher.BeginInvoke((Action)(() => WpfAnimatedGif.ImageBehavior.SetAnimatedSource(player.Poke2Image, GetImageSource(path + "/sprites/none.gif"))));
+                                await player.Poke2Evolutions.Dispatcher.BeginInvoke((Action)(() => player.Poke2Evolutions.Text = "None"));
+
+                            }
                         }
                     }
                 }
+
             }
-
-
+            catch { }
         }
         public bool PartyView = false;
         public bool AutoHide = false;
