@@ -87,7 +87,7 @@ namespace PokemonBWOverlay
             }
             else
             {
-                return new List<Pokemon> { new Pokemon { Name = "None"} };
+                return new List<Pokemon> { new Pokemon { Name = "None" } };
             }
         }
         public async void SetupItems()
@@ -123,10 +123,16 @@ namespace PokemonBWOverlay
         }
         private void ReadFile()
         {
+            if (!File.Exists(path + "/output"))
+            {
+                File.WriteAllText(path + "/output", "");
+            }
             var wh = new AutoResetEvent(false);
-            var fsw = new FileSystemWatcher(".");
-            fsw.Filter = path + "/output";
-            fsw.EnableRaisingEvents = true;
+            var fsw = new FileSystemWatcher(".")
+            {
+                Filter = path + "/output",
+                EnableRaisingEvents = true
+            };
             fsw.Changed += (s, e) => wh.Set();
 
             var fs = new FileStream(path + "/output", FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
@@ -485,11 +491,27 @@ namespace PokemonBWOverlay
                 ThemeManager.Current.ChangeTheme(player, "Dark.Green");
                 if (toggleSwitch.IsOn == true)
                 {
-                    player.Show();
+                    if (player.IsClosed == false)
+                    {
+                        player.Show();
+                    }
+                    else
+                    {
+                        player = new Player();
+                        player.Show();
+                    }
                 }
                 else
                 {
-                    player.Hide();
+                    if (player.IsClosed == false)
+                    {
+                        player.Hide();
+                    }
+                    else
+                    {
+                        player = new Player();
+                        player.Hide();
+                    }
                 }
             }
         }
@@ -504,11 +526,27 @@ namespace PokemonBWOverlay
 
                 if (toggleSwitch.IsOn == true)
                 {
-                    enemy.Show();
+                    if (enemy.IsClosed == false)
+                    {
+                        enemy.Show();
+                    }
+                    else
+                    {
+                        enemy = new Enemy();
+                        enemy.Show();
+                    }
                 }
                 else
                 {
-                    enemy.Hide();
+                    if (enemy.IsClosed == false)
+                    {
+                        enemy.Hide();
+                    }
+                    else
+                    {
+                        enemy = new Enemy();
+                        enemy.Hide();
+                    }
 
                 }
             }
