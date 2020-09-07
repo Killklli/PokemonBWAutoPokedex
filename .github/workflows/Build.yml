@@ -23,6 +23,18 @@ jobs:
     - name: Build and Publish Web App
       run: msbuild PokemonBWOverlay.sln /p:Configuration=Release /p:DeployOnBuild=true
  
+    - name: Display the path
+      run: DIR D:\a\PokemonBWAutoPokedex\PokemonBWAutoPokedex\
+      shell: cmd
+
+    - name: Display the path
+      run: DIR D:\a\PokemonBWAutoPokedex\PokemonBWAutoPokedex\bin\
+      shell: cmd
+
+    - name: Display the path
+      run: DIR D:\a\PokemonBWAutoPokedex\PokemonBWAutoPokedex\bin\x64\
+      shell: cmd
+
     - name: Upload Artifact
       uses: actions/upload-artifact@v1.0.0
       with:
