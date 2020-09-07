@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace PokemonBWOverlay
 {
-    class Pokemon
+    public class Pokemon
     {
         public int Gen;
         public int Id;
         public string Name;
-        public int BST;
+        public long BST;
         public string LevelRate;
         public string Type1;
         public string Type2;

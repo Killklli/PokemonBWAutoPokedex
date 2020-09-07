@@ -1,0 +1,38 @@
+﻿<mah:MetroWindow x:Class="PokemonBWOverlay.Player"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PokemonBWOverlay"
+        xmlns:gif="http://wpfanimatedgif.codeplex.com"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        mc:Ignorable="d"
+                  ResizeMode="NoResize"
+        Title="Pokemon 2" Height="240" Width="350" WindowStyle="None" AllowsTransparency="True">
+    <Grid>
+
+        <TextBlock x:Name="Poke2" HorizontalAlignment="Stretch" Margin="28,10,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Stretch"/>
+        <TextBlock  HorizontalAlignment="Stretch" Margin="10,10,0,0" TextWrapping="Wrap" Text="Id:" VerticalAlignment="Stretch"/>
+        <Image gif:ImageBehavior.AnimatedSource="{Binding SelectedImage}" x:Name="Poke2Image" HorizontalAlignment="Left" Height="116" Margin="236,10,0,0" VerticalAlignment="Top" Width="88" RenderTransformOrigin="0.038,-0.197"/>
+        <TextBlock HorizontalAlignment="Stretch" Margin="123,10,0,0" TextWrapping="Wrap" Text="Name:" VerticalAlignment="Stretch"/>
+        <TextBlock x:Name="Poke2Name" HorizontalAlignment="Stretch" Margin="163,10,0,0" TextWrapping="Wrap" Text="None" VerticalAlignment="Stretch" RenderTransformOrigin="0.55,0.721"/>
+        <TextBlock HorizontalAlignment="Stretch" Margin="10,114,0,0" TextWrapping="Wrap" Text="Legendary:" VerticalAlignment="Stretch"/>
+        <TextBlock x:Name="Poke2Legendary" HorizontalAlignment="Stretch" Margin="73,114,0,0" TextWrapping="Wrap" Text="No" VerticalAlignment="Stretch" RenderTransformOrigin="0.219,0.376"/>
+        <TextBlock HorizontalAlignment="Stretch" Margin="10,31,0,0" TextWrapping="Wrap" Text="Type 1:" VerticalAlignment="Stretch"/>
+        <TextBlock x:Name="Poke2Type1" HorizontalAlignment="Stretch" Margin="50,31,0,0" TextWrapping="Wrap" Text="None" VerticalAlignment="Stretch"/>
+        <TextBlock HorizontalAlignment="Stretch" Margin="121,31,0,0" TextWrapping="Wrap" Text="Type 2:" VerticalAlignment="Stretch"/>
+        <TextBlock x:Name="Poke2Type2" HorizontalAlignment="Stretch" Margin="163,31,0,0" TextWrapping="Wrap" Text="None" VerticalAlignment="Stretch"/>
+        <TextBlock  HorizontalAlignment="Stretch" Margin="68,10,0,0" TextWrapping="Wrap" Text="Gen:" VerticalAlignment="Stretch"/>
+        <TextBlock x:Name="Poke2Gen" HorizontalAlignment="Stretch" Margin="97,10,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Stretch" RenderTransformOrigin="3.056,0.5"/>
+        <TextBlock HorizontalAlignment="Stretch" Margin="114,114,0,0" TextWrapping="Wrap" Text="Evo Req:" VerticalAlignment="Stretch"/>
+        <TextBlock x:Name="Poke2EvoReq" HorizontalAlignment="Stretch" Margin="164,114,0,0" TextWrapping="Wrap" Text="None" VerticalAlignment="Stretch"/>
+        <TextBlock HorizontalAlignment="Stretch" Margin="10,53,0,0" TextWrapping="Wrap" Text="BST:" VerticalAlignment="Stretch"/>
+        <TextBlock x:Name="Poke2BST" HorizontalAlignment="Stretch" Margin="37,53,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Stretch" RenderTransformOrigin="-0.155,0.564"/>
+        <TextBlock HorizontalAlignment="Stretch" Margin="82,53,0,0" TextWrapping="Wrap" Text="Level Rate:" VerticalAlignment="Stretch"/>
+        <TextBlock x:Name="Poke2LevelRate" HorizontalAlignment="Stretch" Margin="143,53,0,0" TextWrapping="Wrap" Text="None" VerticalAlignment="Stretch" RenderTransformOrigin="-0.155,0.564"/>
+        <TextBlock HorizontalAlignment="Stretch" Margin="10,74,0,0" TextWrapping="Wrap" Text="Move Levels:" VerticalAlignment="Stretch"/>
+        <TextBlock x:Name="Poke2MoveLevels" HorizontalAlignment="Left" Margin="83,74,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" RenderTransformOrigin="-0.155,0.564" Width="148" Height="35"/>
+        <TextBlock HorizontalAlignment="Left" Margin="9,144,0,0" TextWrapping="Wrap" Text="Evos:" VerticalAlignment="Top" RenderTransformOrigin="0.841,0.585"/>
+        <TextBlock x:Name="Poke2Evolutions" HorizontalAlignment="Left" Margin="41,144,0,0" TextWrapping="Wrap" Text="None" VerticalAlignment="Top" RenderTransformOrigin="0.219,0.376" Height="86" Width="299"/>
+    </Grid>
+</mah:MetroWindow>
