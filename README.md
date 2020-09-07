@@ -14,6 +14,7 @@ https://sourceforge.net/projects/luabinaries/files/5.1.5/Windows%20Libraries/Dyn
 4. Extract lua5.1.dll from the .zip file to the same folder where your DeSmuME_0.9.11_x86.exe or DeSmuME_0.9.11_x64.exe is
 
 5. Rename lua5.1.dll to lua51.dll
-6. In Desmume, open Tools > Lua Scripting > New Lua Script Window and select the included lua script in the same output folder as the exe you made in step 1.
-7. Make sure the script is running
-8. Start the Exe you made in Step 1.
+6. Download the animated sprites at https://www.pkparaiso.com/xy/sprites_pokemon.php and put all the files in ExePath/sprites/ (You may have to make the sprites folder)
+7. In Desmume, open Tools > Lua Scripting > New Lua Script Window and select the included lua script in the same output folder as the exe you made in step 1.
+8. Make sure the script is running
+9. Start the Exe you made in Step 1.
