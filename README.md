@@ -20,8 +20,8 @@ https://sourceforge.net/projects/luabinaries/files/5.1.5/Windows%20Libraries/Dyn
 
 7. Download the animated sprites at https://www.pkparaiso.com/xy/sprites_pokemon.php and put all the files in ExePath/sprites/ (You may have to make the sprites folder)
 
-8. In Desmume, open Tools > Lua Scripting > New Lua Script Window and select the included lua script in the same output folder as the exe you made in step 1.
+8. In Desmume, open Tools > Lua Scripting > New Lua Script Window and select the included lua script in the same output folder as the exe you extracted in step 5.
 
 9. Make sure the script is running
 
-10. Start the Exe you made in Step 1.
+10. Start the Exe you extracted in step 5.
