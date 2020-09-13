@@ -36,6 +36,15 @@ namespace PokemonBWOverlay
         public MainWindow()
         {
             InitializeComponent();
+            System.IO.Directory.CreateDirectory(path + "/sprites/");
+            if (File.Exists(path + "/none.gif"))
+            {
+                if (File.Exists(path + "/sprites/none.gif"))
+                {
+                    File.Delete(path + "/sprites/none.gif");
+                }
+                File.Move(path + "/none.gif", path + "/sprites/none.gif");
+            }
             this.Icon = GetImageSource(path + "/sprites/none.gif");
             Pokedex = JsonConvert.DeserializeObject<List<Pokemon>>(File.ReadAllText(@"dex.json"));
             SetupItems();
@@ -46,6 +55,7 @@ namespace PokemonBWOverlay
             }).Start();
             ThemeManager.Current.ChangeTheme(this, "Dark.Green");
         }
+
         public List<Pokemon> PossibleEvos(Pokemon pokemon)
         {
             if (pokemon.VanillaEvo != "")
